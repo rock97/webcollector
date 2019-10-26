@@ -15,8 +15,11 @@ public interface TopDao {
     @Select("select * from top order by id desc limit #{top}")
     List<Top> getTop(@Param("top") int top);
 
-    @Select("select * from top where time_id=#{timeId}")
-    List<Top> getList(long timeId);
+    @Select("select * from top where title in (" +
+            "<foreach collection='list' item='item' index='index' separator=','>" +
+            "item"+
+            "</foreach>)")
+    List<Top> getList(List<String> list);
 
     @Insert("insert into top (sequence,title,create_time,status,heat,type) values (#{sequence},#{title},now(),#{status},#{heat},#{type})")
     void insert(Top top);

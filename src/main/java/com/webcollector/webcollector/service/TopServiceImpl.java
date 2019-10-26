@@ -21,7 +21,8 @@ public class TopServiceImpl implements TopService{
     }
 
     public List<Top> getList(long timeId) {
-        return topDao.getList(timeId);
+        //return topDao.getList(timeId);
+        return null;
     }
 
     @Override
