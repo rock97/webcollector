@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Crawler(name = "basic")
 
 public class Basic extends BaseSeimiCrawler {
-    @Scheduled(cron = "0/5 * * * * ?")
     @Override
     public String[] startUrls() {
         return new String[]{"http://s.weibo.com/top/summary?cate=realtimehot"};
@@ -22,6 +21,7 @@ public class Basic extends BaseSeimiCrawler {
     public void start(Response response) {
         JXDocument doc = response.document();
         try {
+
             List<Object> urls = doc.sel("//td[@class='td-02']/a/text()");
             logger.info("doc {}", JSON.toJSONString(doc));
             for (int i = 0; i < urls.size(); i++) {
@@ -33,16 +33,8 @@ public class Basic extends BaseSeimiCrawler {
     }
     @Scheduled(cron = "0/5 * * * * ?")
     public void callByCron(){
-        push(Request.build(startUrls()[0],"start").setSkipDuplicateFilter(true));
         logger.info("我是一个根据cron表达式执行的调度器，5秒一次");
-    }
-    public void getTitle(Response response){
-        JXDocument doc = response.document();
-        try {
-            logger.info("url:{} {}", response.getUrl(), doc.sel("//h1[@class='postTitle']/a/text()|//a[@id='cb_post_title_url']/text()"));
-            //do something
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // 可定时发送一个Request
+         push(Request.build(startUrls()[0],"start").setSkipDuplicateFilter(true));
     }
 }
