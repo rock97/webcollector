@@ -15,4 +15,7 @@ public interface TopService {
     public void bachInsert(List<Object> urls,List<Object> heatList);
 
     List<Top> findDeletedTop(List<String> list);
+
+    List<Top> findRealTop();
+
 }

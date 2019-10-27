@@ -32,6 +32,7 @@ public interface TopDao {
     )
     void bachInsert(@Param("list") List<Top> list, Date date);
 
-    @Select("select * from top order by id desc where create_time = #{to_date(now(),'yyyy-MM-dd HH:mm')}")
-    List<Top> getLastMinute();
+    @Select("select * from top order by id desc where create_time = #{date}")
+    List<Top> getLastMinute(Date date);
+
 }

@@ -36,7 +36,7 @@ public class TopServiceImpl implements TopService{
         top.setType("insert");
         top.setStatus(1);
         top.setTitle(title);
-        topDao.insert(top,getLastMinute());
+        topDao.insert(top,getLastMinute(0));
     }
 
     public void bachInsert(List<Object> urls,List<Object> heatList) {
@@ -69,12 +69,12 @@ public class TopServiceImpl implements TopService{
         }
 
 
-        topDao.bachInsert(topList,getLastMinute());
+        topDao.bachInsert(topList,getLastMinute(0));
     }
 
     @Override
     public List<Top> findDeletedTop(List<String> list) {
-        List<Top> topList = topDao.getLastMinute();
+        List<Top> topList = this.findRealTop();
         List<Top> deleteTop = new ArrayList();
         Map<String, String> map = list.stream().collect(Collectors.toMap(v -> v, v -> v));
 
@@ -87,11 +87,21 @@ public class TopServiceImpl implements TopService{
         return deleteTop;
     }
 
-    private Date getLastMinute(){
+    @Override
+    public List<Top> findRealTop() {
+        List<Top> lastMinute = topDao.getLastMinute(getLastMinute(0));
+        if(lastMinute == null || lastMinute.size()==0){
+            lastMinute = topDao.getLastMinute(getLastMinute(1));
+        }
+        return lastMinute;
+    }
+
+    private Date getLastMinute(int i){
         Date date = new Date();
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date);
         cal1.set(Calendar.SECOND,0);
+        cal1.set(Calendar.MINUTE,cal1.get(Calendar.MINUTE)-i);
         return cal1.getTime();
     }
 }
