@@ -29,7 +29,6 @@ public class Basic extends BaseSeimiCrawler {
         try {
             List<Object> titleList = doc.sel("//td[@class='td-02']/a/text()");
             List<Object> heatList = doc.sel("//td[@class='td-02']/span/text()");
-            //doc.sel("//td[@class='td-02']/span/text()")
             bachInstet(titleList,heatList);
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,7 +41,7 @@ public class Basic extends BaseSeimiCrawler {
     }
 
     private void bachInstet( List<Object> urls,List<Object> heatList){
-        topService.bachInsert(urls,heatList);
+        topService.bachInsert(urls.subList(1,urls.size()),heatList);
         logger.info("bachInsert size={}",urls.size());
     }
 }

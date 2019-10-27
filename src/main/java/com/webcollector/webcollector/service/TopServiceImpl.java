@@ -58,7 +58,7 @@ public class TopServiceImpl implements TopService{
             top.setHeat(Integer.valueOf(heatList.get(i).toString()));
             top.setType("new");
             top.setStatus(1);
-            top.setTitle(titleList.get(i+1));
+            top.setTitle(titleList.get(i));
             topList.add(top);
         }
 
@@ -80,7 +80,9 @@ public class TopServiceImpl implements TopService{
 
         for (Top top : topList) {
             if(map.get(top.getTitle())==null){
-                deleteTop.add(top);
+                if(top.getHeat() > topList.get(30).getHeat()) {
+                    deleteTop.add(top);
+                }
             }
         }
 

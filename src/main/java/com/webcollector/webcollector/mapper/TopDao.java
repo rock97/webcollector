@@ -32,7 +32,7 @@ public interface TopDao {
     )
     void bachInsert(@Param("list") List<Top> list, Date date);
 
-    @Select("select * from top order by id desc where create_time = #{date}")
+    @Select("select * from top order by id desc where status = 1 and create_time = #{date}")
     List<Top> getLastMinute(Date date);
 
     @Select("select * from top order by id desc where status = 2 order by id desc limit #{top}")
