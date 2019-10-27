@@ -109,6 +109,7 @@ public class TopServiceImpl implements TopService{
         cal1.setTime(date);
         cal1.set(Calendar.SECOND,0);
         cal1.set(Calendar.MINUTE,cal1.get(Calendar.MINUTE)-i);
+        cal1.set(Calendar.MILLISECOND,0);
         return cal1.getTime();
     }
 }
