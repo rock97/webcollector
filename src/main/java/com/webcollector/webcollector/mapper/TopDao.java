@@ -35,4 +35,7 @@ public interface TopDao {
     @Select("select * from top order by id desc where create_time = #{date}")
     List<Top> getLastMinute(Date date);
 
+    @Select("select * from top order by id desc where status = 2 order by id desc limit #{top}")
+    List<Top> findDeletedTop(int top);
+
 }

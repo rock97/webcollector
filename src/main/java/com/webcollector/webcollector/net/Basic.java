@@ -42,9 +42,7 @@ public class Basic extends BaseSeimiCrawler {
     }
 
     private void bachInstet( List<Object> urls,List<Object> heatList){
-        for (int i = 0; i < heatList.size(); i++) {
-            topService.insert(i,urls.get(i+1).toString(),Integer.valueOf(heatList.get(i).toString()));
-        }
+        topService.bachInsert(urls,heatList);
         logger.info("bachInsert size={}",urls.size());
     }
 }

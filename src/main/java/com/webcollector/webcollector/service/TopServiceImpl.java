@@ -50,7 +50,7 @@ public class TopServiceImpl implements TopService{
             titleList.add(url.toString());
         }
 
-        List<Top> deletedTop = findDeletedTop(titleList);
+        List<Top> deletedTop = findDeleted(titleList);
 
         for (int i = 0; i < heatList.size(); i++) {
             Top top = new Top();
@@ -73,7 +73,7 @@ public class TopServiceImpl implements TopService{
     }
 
     @Override
-    public List<Top> findDeletedTop(List<String> list) {
+    public List<Top> findDeleted(List<String> list) {
         List<Top> topList = this.findRealTop();
         List<Top> deleteTop = new ArrayList();
         Map<String, String> map = list.stream().collect(Collectors.toMap(v -> v, v -> v));
@@ -94,6 +94,11 @@ public class TopServiceImpl implements TopService{
             lastMinute = topDao.getLastMinute(getLastMinute(1));
         }
         return lastMinute;
+    }
+
+    @Override
+    public List<Top> findDeletedTop(int top) {
+        return topDao.findDeletedTop(top);
     }
 
     private Date getLastMinute(int i){

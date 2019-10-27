@@ -19,8 +19,16 @@ public class TopController {
 
     @GetMapping("/top")
     @ResponseBody
-    public List<Top> getTop(@RequestParam(value = "top",required = false,defaultValue = "51") int top){
-        List<Top> top1 = topService.getTop(top);
+    public List<Top> getTop(){
+        List<Top> top1 = topService.findRealTop();
+        top1.sort(Comparator.comparing(Top::getHeat));
+        return top1;
+    }
+
+    @GetMapping("/findDeleteTop")
+    @ResponseBody
+    public List<Top> findDeleteTop(@RequestParam(value = "top",required = false,defaultValue = "50") int top){
+        List<Top> top1 = topService.findDeletedTop(top);
         top1.sort(Comparator.comparing(Top::getHeat));
         return top1;
     }
