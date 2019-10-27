@@ -29,7 +29,6 @@ public class TopController {
     @ResponseBody
     public List<Top> findDeleteTop(@RequestParam(value = "top",required = false,defaultValue = "50") int top){
         List<Top> top1 = topService.findDeletedTop(top);
-        top1.sort(Comparator.comparing(Top::getHeat).reversed());
         return top1;
     }
     @GetMapping("/index")
