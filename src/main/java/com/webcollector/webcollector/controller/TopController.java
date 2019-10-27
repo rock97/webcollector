@@ -21,7 +21,7 @@ public class TopController {
     @ResponseBody
     public List<Top> getTop(@RequestParam(value = "top",required = false,defaultValue = "51") int top){
         List<Top> top1 = topService.getTop(top);
-        top1.sort(Comparator.comparing(Top::getSequence));
+        top1.sort(Comparator.comparing(Top::getHeat));
         return top1;
     }
     @GetMapping("/index")

@@ -1,6 +1,7 @@
 package com.webcollector.webcollector.mapper;
 
 import com.webcollector.webcollector.bean.Top;
+import java.util.Date;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,13 +22,16 @@ public interface TopDao {
             "</foreach>)")
     List<Top> getList(List<String> list);
 
-    @Insert("insert into top (sequence,title,create_time,status,heat,type) values (#{sequence},#{title},now(),#{status},#{heat},#{type})")
-    void insert(Top top);
+    @Insert("insert into top (sequence,title,create_time,status,heat,type) values (#{sequence},#{title},#{date},#{status},#{heat},#{type})")
+    void insert(Top top,Date date);
 
     @Insert("insert into top(sequence,title,heat,type,status,create_time) values" +
             "<foreach collection='list' item='item' index='index' separator=','>"+
-            "(#{item.sequence},#{item.title},#{item.heat},#{item.type},#{item.status},NOW())"+
+            "(#{item.sequence},#{item.title},#{item.heat},#{item.type},#{item.status},#{date})"+
             "</foreach>"
     )
-    void bachInsert(@Param("list") List<Top> list);
+    void bachInsert(@Param("list") List<Top> list, Date date);
+
+    @Select("select * from top order by id desc where create_time = #{to_date(now(),'yyyy-MM-dd HH:mm')}")
+    List<Top> getLastMinute();
 }

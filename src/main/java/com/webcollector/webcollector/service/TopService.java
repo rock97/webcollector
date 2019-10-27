@@ -8,9 +8,11 @@ import java.util.List;
 public interface TopService {
     public List<Top> getTop(int top);
 
-    public List<Top> getList(long timeId);
+    public List<Top> getList(List<String> list);
 
     public void insert(int order,String title,int heat);
 
-    public void bachInsert(List<String> listTitle);
+    public void bachInsert(List<Object> urls,List<Object> heatList);
+
+    List<Top> findDeletedTop(List<String> list);
 }

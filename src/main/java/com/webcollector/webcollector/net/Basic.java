@@ -5,8 +5,6 @@ import cn.wanghaomiao.seimi.def.BaseSeimiCrawler;
 import cn.wanghaomiao.seimi.struct.Request;
 import cn.wanghaomiao.seimi.struct.Response;
 
-import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 import com.webcollector.webcollector.service.TopServiceImpl;
