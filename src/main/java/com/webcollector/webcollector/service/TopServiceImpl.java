@@ -1,8 +1,10 @@
 package com.webcollector.webcollector.service;
 
 import com.webcollector.webcollector.bean.Top;
+import com.webcollector.webcollector.cache.LocalCache;
 import com.webcollector.webcollector.mapper.TopDao;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +18,8 @@ import java.util.List;
 
 @Service
 public class TopServiceImpl implements TopService{
+    @Autowired
+    private LocalCache localCache;
 
     @Autowired
     private TopDao topDao;
@@ -70,6 +74,8 @@ public class TopServiceImpl implements TopService{
 
 
         topDao.bachInsert(topList,getLastMinute(0));
+
+        this.putCache();
     }
 
     @Override
@@ -118,5 +124,17 @@ public class TopServiceImpl implements TopService{
             lastMinute = topDao.getLastMinute(getLastMinute(1));
         }
         return lastMinute;
+    }
+
+    /**
+     * 添加缓存
+     */
+    private void putCache(){
+        List<Top> topList = findRealTop();
+        topList.sort(Comparator.comparing(Top::getHeat).reversed());
+        localCache.put(LocalCache.GETTOP,topList);
+
+        List<Top> deletedTop1 = findDeletedTop(50);
+        localCache.put(LocalCache.FINDDELETETOP,deletedTop1);
     }
 }
