@@ -74,7 +74,7 @@ public class TopServiceImpl implements TopService{
 
     @Override
     public List<Top> findDeleted(List<String> list) {
-        List<Top> topList = this.findRealTop();
+        List<Top> topList = this.findlastMinuteTop();
         List<Top> deleteTop = new ArrayList();
         Map<String, String> map = list.stream().collect(Collectors.toMap(v -> v, v -> v));
 
@@ -91,10 +91,9 @@ public class TopServiceImpl implements TopService{
 
     @Override
     public List<Top> findRealTop() {
-        List<Top> lastMinute = topDao.getLastMinute(getLastMinute(0));
-        if(lastMinute == null || lastMinute.size()==0){
-            lastMinute = topDao.getLastMinute(getLastMinute(1));
-        }
+        List<Top> lastMinute = this.findlastMinuteTop();
+        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
+        lastMinute.addAll(lastMinuteDeleted);
         return lastMinute;
     }
 
@@ -111,5 +110,13 @@ public class TopServiceImpl implements TopService{
         cal1.set(Calendar.MINUTE,cal1.get(Calendar.MINUTE)-i);
         cal1.set(Calendar.MILLISECOND,0);
         return cal1.getTime();
+    }
+
+    private List<Top> findlastMinuteTop(){
+        List<Top> lastMinute = topDao.getLastMinute(getLastMinute(0));
+        if(lastMinute == null || lastMinute.size()==0){
+            lastMinute = topDao.getLastMinute(getLastMinute(1));
+        }
+        return lastMinute;
     }
 }

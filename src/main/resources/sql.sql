@@ -1,4 +1,4 @@
-create table weibo.top
+create table top
 (
     id          bigint auto_increment
         primary key,
@@ -8,8 +8,6 @@ create table weibo.top
     heat        int         null,
     type        varchar(50) null,
     title       varchar(50) null
-)
-    charset = utf8;
-
+)charset = utf8;
 create index idx_createTime
     on weibo.top (create_time);

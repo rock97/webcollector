@@ -33,10 +33,13 @@ public interface TopDao {
     )
     void bachInsert(@Param("list") List<Top> list, Date date);
 
-    @Select("select id,sequence,title,heat,type,status,create_time AS createTime from top where create_time = #{date} order by id desc")
+    @Select("select id,sequence,title,heat,type,status,create_time AS createTime from top where status = 1 and create_time >= #{date} order by id desc")
     List<Top> getLastMinute(Date date);
 
     @Select("select id,sequence,title,heat,type,status,create_time AS createTime from top where status = 2 order by id desc limit #{top}")
     List<Top> findDeletedTop(int top);
+
+    @Select("select id,sequence,title,heat,type,status,create_time AS createTime from top where status = 2 and create_time >= #{date} order by id desc")
+    List<Top> findLastMinuteDeleted(Date date);
 
 }
