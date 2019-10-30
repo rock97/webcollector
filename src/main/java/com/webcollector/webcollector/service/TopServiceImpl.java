@@ -1,6 +1,7 @@
 package com.webcollector.webcollector.service;
 
 import com.webcollector.webcollector.bean.Top;
+import com.webcollector.webcollector.bean.TopDeleted;
 import com.webcollector.webcollector.cache.LocalCache;
 import com.webcollector.webcollector.mapper.TopDao;
 import java.util.Calendar;
@@ -23,6 +24,9 @@ public class TopServiceImpl implements TopService{
 
     @Autowired
     private TopDao topDao;
+
+    @Autowired
+    private TopDeletedService topDeletedService;
 
     public List<Top> getTop(int top) {
         return topDao.getTop(top);
@@ -54,9 +58,15 @@ public class TopServiceImpl implements TopService{
             titleList.add(url.toString());
         }
 
-        List<Top> deletedTop = findDeleted(titleList);
-
+        //删除历史榜单
+        List<String> deletedTitleList = topDeletedService.getTitleList(titleList);
+        //全部榜单
+        List<String> titleListAll = topDeletedService.getTitleListAll(titleList);
+        Map<String, String> allMap = titleListAll.stream().collect(Collectors.toMap(v -> v, v -> v));
+        Map<String, String> deletedMap = deletedTitleList.stream().collect(Collectors.toMap(v -> v, v -> v));
         for (int i = 0; i < heatList.size(); i++) {
+            //找出新增的热点
+            if(allMap.get(titleList.get(i)) != null) continue;
             Top top = new Top();
             top.setSequence(i);
             top.setHeat(Integer.valueOf(heatList.get(i).toString()));
@@ -66,14 +76,27 @@ public class TopServiceImpl implements TopService{
             topList.add(top);
         }
 
-        for (Top top : deletedTop) {
-            top.setStatus(2);
-            top.setType("deleted");
-            topList.add(top);
+        List<TopDeleted> topDeletedList = new ArrayList<>();
+        List<Top> list = topDao.getList(titleList);
+        Map<String, Top> topMap = list.stream().collect(Collectors.toMap(v -> v.getTitle(), v -> v));
+        for (String title : titleList) {
+            //查找出新删除的热点
+            if(allMap.get(title)!= null && deletedMap.get(title) == null){
+                TopDeleted deleted = new TopDeleted();
+                deleted.setTitle(title);
+                deleted.setTopId(topMap.get(title).getId());
+                topDeletedList.add(deleted);
+            }
         }
 
-
-        topDao.bachInsert(topList,getLastMinute(0));
+        //老删除榜单自动加一
+        topDeletedService.addinc(titleList);
+        //添加新删除的榜单
+        if(topDeletedList!=null && topDeletedList.size()>0)
+            topDeletedService.bachInsert(topDeletedList);
+        //添加新增热点
+        if(topList!=null && topList.size()>0)
+            topDao.bachInsert(topList,getLastMinute(0));
 
         this.putCache();
     }
@@ -98,8 +121,11 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findRealTop() {
         List<Top> lastMinute = this.findlastMinuteTop();
-        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
-        lastMinute.addAll(lastMinuteDeleted);
+        List<Long> minuteDeleted = topDeletedService.findLastMinuteDeleted(getLastMinute(15));
+        if(minuteDeleted.size()>0) {
+            List<Top> topList = topDao.getListByIds(minuteDeleted);
+            lastMinute.addAll(topList);
+        }
         return lastMinute;
     }
 
@@ -131,10 +157,10 @@ public class TopServiceImpl implements TopService{
      */
     private void putCache(){
         List<Top> topList = findRealTop();
+
         topList.sort(Comparator.comparing(Top::getHeat).reversed());
         localCache.put(LocalCache.GETTOP,topList);
-
-        List<Top> deletedTop1 = findDeletedTop(50);
-        localCache.put(LocalCache.FINDDELETETOP,deletedTop1);
+        List<TopDeleted> topDeleteds = topDeletedService.getTop(50);
+        localCache.put(LocalCache.FINDDELETETOP,topDeleteds);
     }
 }

@@ -17,11 +17,19 @@ public interface TopDao {
     @Select("select * from top order by id desc limit #{top}")
     List<Top> getTop(@Param("top") int top);
 
-    @Select("select * from top where title in (" +
+    @Select("<script> select id,sequence,title,create_time,status,heat,type from top where title in (" +
             "<foreach collection='list' item='item' index='index' separator=','>" +
             "#{item}"+
-            "</foreach>)")
+            "</foreach>)"
+            + "</script> ")
     List<Top> getList(List<String> list);
+
+    @Select("<script> select * from top where id in (" +
+            "<foreach collection='list' item='item' index='index' separator=','>" +
+            "#{item}"+
+            "</foreach>)"
+            + "</script> ")
+    List<Top> getListByIds(List<Long> list);
 
     @Insert("insert into top (sequence,title,create_time,status,heat,type) values (#{sequence},#{title},#{date},#{status},#{heat},#{type})")
     void insert(Top top,Date date);
@@ -36,10 +44,10 @@ public interface TopDao {
     @Select("select id,sequence,title,heat,type,status,create_time AS createTime from top where status = 1 and create_time >= #{date} order by id desc")
     List<Top> getLastMinute(Date date);
 
-    @Select("select id,sequence,distinct title,heat,type,status,create_time AS createTime from top where status = 2 order by id desc limit #{top}")
+    @Select("select id,sequence, title,heat,type,status,create_time AS createTime from top where status = 2 order by id desc limit #{top}")
     List<Top> findDeletedTop(int top);
 
-    @Select("select id,sequence,distinct title,heat,type,status,create_time AS createTime from top where status = 2 and create_time >= #{date} order by id desc")
+    @Select("select id,sequence, title,heat,type,status,create_time AS createTime from top where status = 2 and create_time >= #{date} order by id desc")
     List<Top> findLastMinuteDeleted(Date date);
 
 }

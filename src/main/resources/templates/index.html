@@ -3,65 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <title>微博实时热搜</title>
-    <!-- 引入bootstrap样式 -->
-    <link href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 引入bootstrap-table样式 -->
-    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+    <!-- 引入Vue.js -->
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
 
-    <!-- jquery -->
-    <script src="https://cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-    <!-- bootstrap-table.min.js -->
-    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.js"></script>
-    <!-- 引入中文语言包 -->
-    <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/locale/bootstrap-table-zh-CN.min.js"></script>
-
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
-<body>
-<table id="table"></table>
-<table data-toggle="table" data-url="data1.json">
-    <thead>
-    <tr>
-        <th data-field="sequence">排名</th>
-        <th data-field="title">话题</th>
-        <th data-field="heat">热度</th>
-    </tr>
-    </thead>
-</table>
+<style>
+    .el-header {
+        background-color: #B3C0D1;
+        color: #333;
+        line-height: 60px;
+    }
 
+    .el-aside {
+        color: #333;
+    }
+</style>
+<body>
+    <table>
+        <head></head>
+    </table>
 </body>
 <script>
-    $("#table").bootstrapTable({ // 对应table标签的id
-        url: "<%=request.getContextPath()%>/weibo/top?top=50", // 获取表格数据的url
-        cache: false, // 设置为 false 禁用 AJAX 数据缓存， 默认为true
-        striped: true,  //表格显示条纹，默认为false
-        pagination: true, // 在表格底部显示分页组件，默认false
-        columns: [
-           {
-                field: 'sequence', // 返回json数据中的name
-                title: '排名', // 表格表头显示文字
-                align: 'left', // 左右居中
-                valign: 'middle' // 上下居中
-            }, {
-                field: 'title',
-                title: '话题',
-                align: 'center',
-                valign: 'middle'
-            }, {
-                field: 'heat',
-                title: '热度',
-                align: 'center',
-                valign: 'middle'
 
-            }
-        ],
-        onLoadSuccess: function(){  //加载成功时执行
-            console.info("加载成功");
-        },
-        onLoadError: function(){  //加载失败时执行
-            console.info("加载数据失败");
-        }
-    })
 </script>
 </html>
