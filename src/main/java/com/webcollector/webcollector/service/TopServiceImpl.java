@@ -134,7 +134,7 @@ public class TopServiceImpl implements TopService{
         topList.sort(Comparator.comparing(Top::getHeat).reversed());
         localCache.put(LocalCache.GETTOP,topList);
 
-        List<Top> deletedTop1 = findDeletedTop(50);
+        List<Top> deletedTop1 = findDeletedTop(100);
         localCache.put(LocalCache.FINDDELETETOP,deletedTop1);
     }
 }
