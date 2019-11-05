@@ -2,12 +2,13 @@ create table top
 (
     id          bigint auto_increment
         primary key,
-    sequence    int         null,
-    create_time datetime    null,
-    status      int(4)      null,
-    heat        int         null,
-    type        varchar(50) null,
-    title       varchar(50) null
+    sequence    int        not null,
+    create_time datetime   not null,
+    status      int(4)     not null,
+    heat        int        not null,
+    type        varchar(50) not null,
+    title       varchar(60) not null
 )charset = utf8;
 create index idx_createTime
     on weibo.top (create_time);
+create index top_create_time_title_index on top (create_time, title);
