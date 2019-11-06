@@ -43,7 +43,7 @@ public class TopServiceImpl implements TopService{
         topDao.insert(top,getLastMinute(0));
     }
 
-    public void bachInsert(List<Object> urls,List<Object> heatList) {
+    public void bachInsert(List<Object> urls,List<Object> heatList,List<Object> urlList) {
         if(urls == null){
             return;
         }
@@ -63,6 +63,7 @@ public class TopServiceImpl implements TopService{
             top.setType("new");
             top.setStatus(1);
             top.setTitle(titleList.get(i));
+            top.setUrl("http://s.weibo.com"+urlList.get(i).toString());
             topList.add(top);
         }
 

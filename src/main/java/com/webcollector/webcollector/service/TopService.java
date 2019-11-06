@@ -12,7 +12,7 @@ public interface TopService {
 
     public void insert(int order,String title,int heat);
 
-    public void bachInsert(List<Object> urls,List<Object> heatList);
+    public void bachInsert(List<Object> titleList,List<Object> heatList,List<Object> urlList);
 
     List<Top> findDeleted(List<String> list);
 
