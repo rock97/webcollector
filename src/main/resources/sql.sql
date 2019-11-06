@@ -8,7 +8,7 @@ create table top
     heat        int        not null,
     type        varchar(50) not null,
     title       varchar(60) not null
-)charset = utf8;
+)ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 create index idx_createTime
     on weibo.top (create_time);
 create index top_create_time_title_index on top (create_time, title);
