@@ -57,7 +57,7 @@ public class TopServiceImpl implements TopService{
             titleList.add(url.toString());
         }
 
-        List<Top> deletedTop = findDeleted(titleList);
+        List<Top> deletedTop = this.findDeleted(titleList,Integer.valueOf(heatList.get(heatList.size()-2).toString()));
 
         for (int i = 0; i < heatList.size(); i++) {
             String url = urlList.get(i).toString();
@@ -84,13 +84,29 @@ public class TopServiceImpl implements TopService{
 
     @Override
     public List<Top> findDeleted(List<String> list) {
-        List<Top> topList = this.findlastMinuteTop();
+        List<Top> oldList = this.findlastMinuteTop();
         List<Top> deleteTop = new ArrayList();
-        Map<String, String> map = list.stream().collect(Collectors.toMap(v -> v, v -> v));
-        for (Top top : topList) {
-            if(map.get(top.getTitle())==null){
-                if(top.getHeat() > topList.get(topList.size()-2).getHeat()) {
-                    deleteTop.add(top);
+        Map<String, String> nowMap = list.stream().collect(Collectors.toMap(v -> v, v -> v));
+        for (Top oldTop : oldList) {
+            if(nowMap.get(oldTop.getTitle())==null){
+                if(oldTop.getHeat() > oldList.get(45).getHeat()) {
+                    deleteTop.add(oldTop);
+                }
+            }
+        }
+
+        return deleteTop;
+    }
+
+
+    public List<Top> findDeleted(List<String> list,int heat) {
+        List<Top> oldList = this.findlastMinuteTop();
+        List<Top> deleteTop = new ArrayList();
+        Map<String, String> nowMap = list.stream().collect(Collectors.toMap(v -> v, v -> v));
+        for (Top oldTop : oldList) {
+            if(nowMap.get(oldTop.getTitle())==null){
+                if(oldTop.getHeat() > heat) {
+                    deleteTop.add(oldTop);
                 }
             }
         }
