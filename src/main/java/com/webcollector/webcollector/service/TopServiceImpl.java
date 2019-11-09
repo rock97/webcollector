@@ -117,7 +117,7 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findRealTop() {
         List<Top> lastMinute = this.findlastMinuteTop();
-        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
+        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(30));
         lastMinute.addAll(lastMinuteDeleted);
         return lastMinute;
     }
