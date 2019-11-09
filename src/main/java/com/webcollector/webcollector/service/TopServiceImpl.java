@@ -84,10 +84,9 @@ public class TopServiceImpl implements TopService{
         List<Top> topList = this.findlastMinuteTop();
         List<Top> deleteTop = new ArrayList();
         Map<String, String> map = list.stream().collect(Collectors.toMap(v -> v, v -> v));
-
         for (Top top : topList) {
             if(map.get(top.getTitle())==null){
-                if(top.getHeat() > topList.get(30).getHeat()) {
+                if(top.getHeat() > topList.get(45).getHeat() && !top.getUrl().contains("javascript")) {
                     deleteTop.add(top);
                 }
             }
