@@ -1,5 +1,6 @@
 package com.webcollector.webcollector.service;
 
+import com.alibaba.fastjson.JSON;
 import com.webcollector.webcollector.bean.Top;
 import com.webcollector.webcollector.cache.LocalCache;
 import com.webcollector.webcollector.mapper.TopDao;
@@ -8,6 +9,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class TopServiceImpl implements TopService{
     @Autowired
@@ -57,14 +60,21 @@ public class TopServiceImpl implements TopService{
         List<Top> deletedTop = findDeleted(titleList);
 
         for (int i = 0; i < heatList.size(); i++) {
+            String url = urlList.get(i).toString();
             Top top = new Top();
             top.setSequence(i);
             top.setHeat(Integer.valueOf(heatList.get(i).toString()));
             top.setType("new");
             top.setStatus(1);
             top.setTitle(titleList.get(i));
-            top.setUrl("http://s.weibo.com"+urlList.get(i).toString());
+            top.setUrl("http://s.weibo.com"+url);
+            if(url.contains("javascript")){
+                log.info("title = {} , url = {}",titleList.get(i),url);
+                top.setStatus(3);
+                top.setType("marketing");
+            }
             topList.add(top);
+
         }
 
         for (Top top : deletedTop) {
@@ -86,7 +96,7 @@ public class TopServiceImpl implements TopService{
         Map<String, String> map = list.stream().collect(Collectors.toMap(v -> v, v -> v));
         for (Top top : topList) {
             if(map.get(top.getTitle())==null){
-                if(top.getHeat() > topList.get(45).getHeat() && !top.getUrl().contains("javascript")) {
+                if(top.getHeat() > topList.get(topList.size()-1).getHeat()) {
                     deleteTop.add(top);
                 }
             }
