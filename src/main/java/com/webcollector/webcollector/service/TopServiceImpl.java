@@ -40,7 +40,7 @@ public class TopServiceImpl implements TopService{
         Top top = new Top();
         top.setSequence(order);
         top.setHeat(heat);
-        top.setType("insert");
+        top.setType("new");
         top.setStatus(1);
         top.setTitle(title);
         topDao.insert(top,getLastMinute(0));
@@ -68,13 +68,7 @@ public class TopServiceImpl implements TopService{
             top.setStatus(1);
             top.setTitle(titleList.get(i));
             top.setUrl("http://s.weibo.com"+url);
-            if(url.contains("javascript")){
-                log.info("title = {} , url = {}",titleList.get(i),url);
-                top.setStatus(3);
-                top.setType("marketing");
-            }
             topList.add(top);
-
         }
 
         for (Top top : deletedTop) {
@@ -82,7 +76,6 @@ public class TopServiceImpl implements TopService{
             top.setType("deleted");
             topList.add(top);
         }
-
 
         topDao.bachInsert(topList,getLastMinute(0));
 
@@ -96,7 +89,7 @@ public class TopServiceImpl implements TopService{
         Map<String, String> map = list.stream().collect(Collectors.toMap(v -> v, v -> v));
         for (Top top : topList) {
             if(map.get(top.getTitle())==null){
-                if(top.getHeat() > topList.get(topList.size()-1).getHeat()) {
+                if(top.getHeat() > topList.get(topList.size()-2).getHeat()) {
                     deleteTop.add(top);
                 }
             }
@@ -108,7 +101,7 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findRealTop() {
         List<Top> lastMinute = this.findlastMinuteTop();
-        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(60));
+        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
         lastMinute.addAll(lastMinuteDeleted);
         return lastMinute;
     }
@@ -144,7 +137,7 @@ public class TopServiceImpl implements TopService{
         topList.sort(Comparator.comparing(Top::getHeat).reversed());
         localCache.put(LocalCache.GETTOP,topList);
 
-        List<Top> deletedTop1 = topDao.findDeletedTop(100);
+        List<Top> deletedTop1 = topDao.findLastMinuteDeleted(getLastMinute(60*24));
         localCache.put(LocalCache.FINDDELETETOP,deletedTop1);
     }
 }
