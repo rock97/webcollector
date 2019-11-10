@@ -162,7 +162,7 @@ public class TopServiceImpl implements TopService{
         localCache.put(LocalCache.FINDDELETETOP,deletedTop);
 
         List<Top> historyBurst = topDao.findHistoryBurst(3, 100);
-        localCache.put(LocalCache.FINDHISTORYBURST,historyBurst);
+        localCache.put(LocalCache.FINDHISTORYBURST+":3:100",historyBurst);
 
     }
 }

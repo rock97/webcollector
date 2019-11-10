@@ -45,7 +45,7 @@ public class TopController {
     @GetMapping("/findHistoryBurst")
     @ResponseBody
     public List<Top> findHistoryBurst(int index,int top){
-        List<Top> topList = localCache.get(LocalCache.FINDHISTORYBURST);
+        List<Top> topList = localCache.get(LocalCache.FINDHISTORYBURST+":"+index+":"+top);
         if(topList == null || topList.size() <=0){
             topList = topService.findHistoryBurst(index, top);
         }
