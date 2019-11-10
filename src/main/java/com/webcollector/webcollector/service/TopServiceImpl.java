@@ -117,7 +117,7 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findRealTop() {
         List<Top> lastMinute = this.findlastMinuteTop();
-        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(30));
+        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
         lastMinute.addAll(lastMinuteDeleted);
         return lastMinute;
     }
@@ -125,6 +125,11 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findDeletedTop(int top) {
         return topDao.findDeletedTop(top);
+    }
+
+    @Override
+    public List<Top> findHistoryBurst(int index, int top) {
+        return topDao.findHistoryBurst(index,top);
     }
 
     private Date getLastMinute(int i){
@@ -153,7 +158,11 @@ public class TopServiceImpl implements TopService{
         topList.sort(Comparator.comparing(Top::getHeat).reversed());
         localCache.put(LocalCache.GETTOP,topList);
 
-        List<Top> deletedTop1 = topDao.findLastMinuteDeleted(getLastMinute(60*24));
-        localCache.put(LocalCache.FINDDELETETOP,deletedTop1);
+        List<Top> deletedTop = topDao.findLastMinuteDeleted(getLastMinute(60*24));
+        localCache.put(LocalCache.FINDDELETETOP,deletedTop);
+
+        List<Top> historyBurst = topDao.findHistoryBurst(3, 100);
+        localCache.put(LocalCache.FINDHISTORYBURST,historyBurst);
+
     }
 }

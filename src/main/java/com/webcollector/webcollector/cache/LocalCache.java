@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class LocalCache {
     public static final String GETTOP = "TopController.getTop";
     public static final String FINDDELETETOP = "TopController.findDeleteTop";
+    public static final String FINDHISTORYBURST = "TopController.findHistoryBurst";
     private static ConcurrentHashMap<String, List<Top>> cache = new ConcurrentHashMap();
     public void put(String key,List<Top> value){
         cache.put(key, value);

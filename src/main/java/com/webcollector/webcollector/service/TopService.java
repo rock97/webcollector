@@ -20,4 +20,6 @@ public interface TopService {
 
     List<Top> findDeletedTop(int top);
 
+    List<Top> findHistoryBurst(int index,int top);
+
 }

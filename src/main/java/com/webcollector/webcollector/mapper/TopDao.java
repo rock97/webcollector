@@ -42,4 +42,7 @@ public interface TopDao {
     @Select("select id,sequence, title,url,heat,type,status,create_time AS createTime from top where status = 2 and create_time >= #{date} group by title order by id desc")
     List<Top> findLastMinuteDeleted(Date date);
 
+    @Select("select id,sequence, title,url,heat,type,status,create_time AS createTime from top where sequence < #{index} and status =1 group by title order by id desc limit #{top}")
+    List<Top> findHistoryBurst(int index,int top);
+
 }

@@ -41,6 +41,17 @@ public class TopController {
         }
         return top1;
     }
+
+    @GetMapping("/findHistoryBurst")
+    @ResponseBody
+    public List<Top> findHistoryBurst(int index,int top){
+        List<Top> topList = localCache.get(LocalCache.FINDHISTORYBURST);
+        if(topList == null || topList.size() <=0){
+            topList = topService.findHistoryBurst(index, top);
+        }
+        return topList;
+    }
+
     @GetMapping("/index")
     public String index(Model model ){
         return "index";
