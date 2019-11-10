@@ -13,11 +13,12 @@ import java.util.Map;
 
 @Mapper
 public interface TopDao {
+    String COLUMNS = "id,sequence,title,url,heat,type,status,create_time AS createTime ";
 
-    @Select("select * from top order by id desc limit #{top}")
+    @Select("select "+COLUMNS+" from top order by id desc limit #{top}")
     List<Top> getTop(@Param("top") int top);
 
-    @Select("select * from top where title in (" +
+    @Select("select "+COLUMNS+" from top where title in (" +
             "<foreach collection='list' item='item' index='index' separator=','>" +
             "#{item}"+
             "</foreach>)")
@@ -33,16 +34,16 @@ public interface TopDao {
     )
     void bachInsert(@Param("list") List<Top> list, Date date);
 
-    @Select("select id,sequence,title,url,heat,type,status,create_time AS createTime from top where status = 1 and create_time >= #{date} order by id desc")
+    @Select("select "+COLUMNS+" from top where status = 1 and create_time >= #{date} order by id desc")
     List<Top> getLastMinute(Date date);
 
-    @Select("select id,sequence, title,url,heat,type,status,create_time AS createTime from top where status = 2 group by title order by id desc limit #{top}")
+    @Select("select "+COLUMNS+" from top where status = 2 group by title order by id desc limit #{top}")
     List<Top> findDeletedTop(int top);
 
-    @Select("select id,sequence, title,url,heat,type,status,create_time AS createTime from top where status = 2 and create_time >= #{date} group by title order by id desc")
+    @Select("select "+COLUMNS+" from top where status = 2 and create_time >= #{date} group by title order by id desc")
     List<Top> findLastMinuteDeleted(Date date);
 
-    @Select("select id,sequence, title,url,heat,type,status,create_time AS createTime from top where sequence < #{index} and status =1 group by title order by id desc limit #{top}")
+    @Select("select "+COLUMNS+" from top where sequence < #{index} and status =1 group by title order by id desc limit #{top}")
     List<Top> findHistoryBurst(int index,int top);
 
 }
