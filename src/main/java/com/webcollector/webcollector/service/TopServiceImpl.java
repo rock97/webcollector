@@ -57,7 +57,7 @@ public class TopServiceImpl implements TopService{
             titleList.add(url.toString());
         }
 
-        List<Top> deletedTop = this.findDeleted(titleList,Integer.valueOf(heatList.get(heatList.size()-2).toString()));
+        List<Top> deletedTop = this.findDeleted(titleList,Integer.valueOf(heatList.get(heatList.size()-5).toString()));
 
         for (int i = 0; i < heatList.size(); i++) {
             String url = urlList.get(i).toString();
@@ -134,7 +134,7 @@ public class TopServiceImpl implements TopService{
 
     @Override
     public List<Top> findLastDayDeletedTop(int day) {
-        List<Top> deletedTop = topDao.findLastMinuteDeleted(getLastMinute(60*24*day));
+        List<Top> deletedTop = topDao.findLastDayDeletedTop(getLastMinute(60*24*day),getLastMinute(60*24*(day-1)));
         Top top = new Top();
         top.setTitle("最近"+day*24+"小时被删热搜");
         top.setStatus(3);
