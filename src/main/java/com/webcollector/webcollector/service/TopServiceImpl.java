@@ -136,7 +136,7 @@ public class TopServiceImpl implements TopService{
     public List<Top> findLastDayDeletedTop(int day) {
         List<Top> deletedTop = topDao.findLastDayDeletedTop(getLastMinute(60*24*day),getLastMinute(60*24*(day-1)));
         Top top = new Top();
-        top.setTitle("最近"+day*24+"小时被删热搜");
+        top.setTitle("最近"+day+"*24小时被删热搜");
         top.setStatus(3);
         deletedTop.add(0,top);
         return deletedTop;

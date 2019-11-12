@@ -1,14 +1,20 @@
-create table top
+create table weibo.top
 (
-    id          bigint auto_increment
-        primary key,
-    sequence    int        not null,
-    create_time datetime   not null,
-    status      int(4)     not null,
-    heat        int        not null,
-    type        varchar(50) not null,
-    title       varchar(60) not null
-)ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
+  id          bigint auto_increment
+    primary key,
+  sequence    int           not null,
+  create_time datetime      null,
+  status      int(4)        null,
+  heat        int           null,
+  type        varchar(50)   null,
+  title       varchar(50)   null,
+  url         varchar(1000) null
+)
+  charset = utf8;
+
 create index idx_createTime
-    on weibo.top (create_time);
-create index top_create_time_title_index on top (create_time, title);
+  on weibo.top (create_time);
+
+create index idx_title
+  on weibo.top (title);
+
