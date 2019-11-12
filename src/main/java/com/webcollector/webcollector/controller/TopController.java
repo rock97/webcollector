@@ -34,10 +34,10 @@ public class TopController {
 
     @GetMapping("/findDeleteTop")
     @ResponseBody
-    public List<Top> findDeleteTop(@RequestParam(value = "top",required = false,defaultValue = "50") int top){
-        List<Top> top1 = localCache.get(LocalCache.FINDDELETETOP);
+    public List<Top> findDeleteTop(@RequestParam(value = "day",required = false,defaultValue = "1") int day){
+        List<Top> top1 = localCache.get(LocalCache.FINDDELETETOP+":"+day);
         if(top1 == null) {
-            top1 = topService.findDeletedTop(top);
+            top1 = topService.findLastDayDeletedTop(day);
         }
         return top1;
     }

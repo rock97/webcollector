@@ -22,4 +22,6 @@ public interface TopService {
 
     List<Top> findHistoryBurst(int index,int top);
 
+    List<Top> findLastDayDeletedTop(int day);
+
 }

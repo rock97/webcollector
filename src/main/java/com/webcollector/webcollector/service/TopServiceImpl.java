@@ -132,6 +132,16 @@ public class TopServiceImpl implements TopService{
         return topDao.findHistoryBurst(index,Math.max(0,top-100),top);
     }
 
+    @Override
+    public List<Top> findLastDayDeletedTop(int day) {
+        List<Top> deletedTop = topDao.findLastMinuteDeleted(getLastMinute(60*24*day));
+        Top top = new Top();
+        top.setTitle("最近"+day*24+"小时被删热搜");
+        top.setStatus(3);
+        deletedTop.add(0,top);
+        return deletedTop;
+    }
+
     private Date getLastMinute(int i){
         Date date = new Date();
         Calendar cal1 = Calendar.getInstance();
@@ -158,8 +168,8 @@ public class TopServiceImpl implements TopService{
         topList.sort(Comparator.comparing(Top::getHeat).reversed());
         localCache.put(LocalCache.GETTOP,topList);
 
-        List<Top> deletedTop = topDao.findLastMinuteDeleted(getLastMinute(60*24));
-        localCache.put(LocalCache.FINDDELETETOP,deletedTop);
+        List<Top> deletedTop = this.findLastDayDeletedTop(1);
+        localCache.put(LocalCache.FINDDELETETOP+":1",deletedTop);
 
         List<Top> historyBurst = topDao.findHistoryBurst(3,0, 100);
         localCache.put(LocalCache.FINDHISTORYBURST+":3:100",historyBurst);
