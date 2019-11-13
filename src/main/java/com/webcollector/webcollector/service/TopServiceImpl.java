@@ -84,7 +84,8 @@ public class TopServiceImpl implements TopService{
 
     @Override
     public List<Top> findDeleted(List<String> list) {
-        List<Top> oldList = this.findlastMinuteTop();
+        List<Long> oldListids = this.findlastMinuteTop();
+        List<Top> oldList = topDao.findListByIds(oldListids);
         List<Top> deleteTop = new ArrayList();
         Map<String, String> nowMap = list.stream().collect(Collectors.toMap(v -> v, v -> v));
         for (Top oldTop : oldList) {
@@ -100,8 +101,12 @@ public class TopServiceImpl implements TopService{
 
 
     public List<Top> findDeleted(List<String> list,int heat) {
-        List<Top> oldList = this.findlastMinuteTop();
+        List<Long> oldListIds = this.findlastMinuteTop();
+
+        List<Top> oldList = topDao.findListByIds(oldListIds);
+
         List<Top> deleteTop = new ArrayList();
+
         Map<String, String> nowMap = list.stream().collect(Collectors.toMap(v -> v, v -> v));
         for (Top oldTop : oldList) {
             if(nowMap.get(oldTop.getTitle())==null){
@@ -116,30 +121,32 @@ public class TopServiceImpl implements TopService{
 
     @Override
     public List<Top> findRealTop() {
-        List<Top> lastMinute = this.findlastMinuteTop();
-        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
+        List<Long> lastMinute = this.findlastMinuteTop();
+        List<Long> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
         lastMinute.addAll(lastMinuteDeleted);
-        return lastMinute;
+        return topDao.findListByIds(lastMinute);
     }
 
     @Override
     public List<Top> findDeletedTop(int top) {
-        return topDao.findDeletedTop(top);
+        return null;
     }
 
     @Override
     public List<Top> findHistoryBurst(int index, int top) {
-        return topDao.findHistoryBurst(index,Math.max(0,top-100),top);
+        List<Long> historyBurst = topDao.findHistoryBurst(index, Math.max(0, top - 100), top);
+        return topDao.findListByIds(historyBurst);
     }
 
     @Override
     public List<Top> findLastDayDeletedTop(int day) {
-        List<Top> deletedTop = topDao.findLastDayDeletedTop(getLastMinute(60*24*day),getLastMinute(60*24*(day-1)));
+        List<Long> deletedTopIds = topDao.findLastDayDeletedTop(getLastMinute(60*24*day),getLastMinute(60*24*(day-1)));
+        List<Top> listByIds = topDao.findListByIds(deletedTopIds);
         Top top = new Top();
         top.setTitle("最近"+day+"*24小时被删热搜");
         top.setStatus(3);
-        deletedTop.add(0,top);
-        return deletedTop;
+        listByIds.add(0,top);
+        return listByIds;
     }
 
     private Date getLastMinute(int i){
@@ -152,11 +159,12 @@ public class TopServiceImpl implements TopService{
         return cal1.getTime();
     }
 
-    private List<Top> findlastMinuteTop(){
-        List<Top> lastMinute = topDao.getLastMinute(getLastMinute(0));
+    private List<Long> findlastMinuteTop(){
+        List<Long> lastMinute = topDao.getLastMinute(getLastMinute(0));
         if(lastMinute == null || lastMinute.size()==0){
             lastMinute = topDao.getLastMinute(getLastMinute(1));
         }
+
         return lastMinute;
     }
 
@@ -171,7 +179,7 @@ public class TopServiceImpl implements TopService{
         List<Top> deletedTop = this.findLastDayDeletedTop(1);
         localCache.put(LocalCache.FINDDELETETOP+":1",deletedTop);
 
-        List<Top> historyBurst = topDao.findHistoryBurst(3,0, 100);
+        List<Top> historyBurst = this.findHistoryBurst(0, 100);
         localCache.put(LocalCache.FINDHISTORYBURST+":3:100",historyBurst);
 
     }
