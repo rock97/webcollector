@@ -85,6 +85,9 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findDeleted(List<String> list) {
         List<Long> oldListids = this.findlastMinuteTop();
+        if(oldListids == null || oldListids.size() ==0){
+            return new ArrayList<>();
+        }
         List<Top> oldList = topDao.findListByIds(oldListids);
         List<Top> deleteTop = new ArrayList();
         Map<String, String> nowMap = list.stream().collect(Collectors.toMap(v -> v, v -> v));
@@ -102,7 +105,9 @@ public class TopServiceImpl implements TopService{
 
     public List<Top> findDeleted(List<String> list,int heat) {
         List<Long> oldListIds = this.findlastMinuteTop();
-
+        if(oldListIds == null || oldListIds.size() ==0){
+            return new ArrayList<>();
+        }
         List<Top> oldList = topDao.findListByIds(oldListIds);
 
         List<Top> deleteTop = new ArrayList();
@@ -124,6 +129,9 @@ public class TopServiceImpl implements TopService{
         List<Long> lastMinute = this.findlastMinuteTop();
         List<Long> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
         lastMinute.addAll(lastMinuteDeleted);
+        if(lastMinute == null || lastMinute.size() ==0){
+            return new ArrayList<>();
+        }
         return topDao.findListByIds(lastMinute);
     }
 
@@ -135,12 +143,18 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findHistoryBurst(int index, int top) {
         List<Long> historyBurst = topDao.findHistoryBurst(index, Math.max(0, top - 100), top);
+        if(historyBurst == null || historyBurst.size() ==0){
+            return new ArrayList<>();
+        }
         return topDao.findListByIds(historyBurst);
     }
 
     @Override
     public List<Top> findLastDayDeletedTop(int day) {
         List<Long> deletedTopIds = topDao.findLastDayDeletedTop(getLastMinute(60*24*day),getLastMinute(60*24*(day-1)));
+        if(deletedTopIds == null || deletedTopIds.size() ==0){
+            return new ArrayList<>();
+        }
         List<Top> listByIds = topDao.findListByIds(deletedTopIds);
         Top top = new Top();
         top.setTitle("最近"+day+"*24小时被删热搜");
