@@ -70,7 +70,6 @@ public class TopServiceImpl implements TopService{
             top.setType("new");
             top.setStatus(1);
             top.setTitle(titleList.get(i));
-            top.setUrl("http://s.weibo.com"+url);
             topList.add(top);
         }
 

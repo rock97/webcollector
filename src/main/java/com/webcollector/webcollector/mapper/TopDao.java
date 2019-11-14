@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Mapper
 public interface TopDao {
-    String COLUMNS = "id,sequence,title,url,heat,type,status,create_time AS createTime ";
+    String COLUMNS = "id,title,heat,status";
 
     @Select("select "+COLUMNS+" from top order by id desc limit #{top}")
     List<Top> getTop(@Param("top") int top);
@@ -24,12 +24,12 @@ public interface TopDao {
             "</foreach>)")
     List<Top> getList(List<String> list);
 
-    @Insert("insert into top (sequence,title,url,create_time,status,heat,type) values (#{sequence},#{title},#{url},#{date},#{status},#{heat},#{type})")
+    @Insert("insert into top (sequence,title,create_time,status,heat,type) values (#{sequence},#{title},#{date},#{status},#{heat},#{type})")
     void insert(Top top,Date date);
 
-    @Insert("<script>  insert into top(sequence,title,url,heat,type,status,create_time) values" +
+    @Insert("<script>  insert into top(sequence,title,heat,type,status,create_time) values" +
             "<foreach collection='list' item='item' index='index' separator=','>"+
-            "(#{item.sequence},#{item.title},#{item.url},#{item.heat},#{item.type},#{item.status},#{date})"+
+            "(#{item.sequence},#{item.title},#{item.heat},#{item.type},#{item.status},#{date})"+
             "</foreach> </script>"
     )
     void bachInsert(@Param("list") List<Top> list, Date date);
