@@ -176,7 +176,7 @@ public class TopServiceImpl implements TopService{
         List<Top> deletedTop = this.findLastDayDeletedTop(1);
         localCache.put(LocalCache.FINDDELETETOP+":1",deletedTop);
 
-        List<Top> historyBurst = topDao.findHistoryBurst(3,0, 100).stream().filter(distinctByKey(Top::getTitle)).collect(
+        List<Top> historyBurst = topDao.findHistoryBurst(3,0, 500).stream().filter(distinctByKey(Top::getTitle)).collect(
                 Collectors.toList());
         localCache.put(LocalCache.FINDHISTORYBURST+":3:100",historyBurst);
 
