@@ -7,6 +7,9 @@ import com.webcollector.webcollector.mapper.TopDao;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -117,7 +120,8 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findRealTop() {
         List<Top> lastMinute = this.findlastMinuteTop();
-        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15));
+        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(15)).stream().filter(distinctByKey(Top::getTitle)).collect(
+                Collectors.toList());
         lastMinute.addAll(lastMinuteDeleted);
         return lastMinute;
     }
@@ -134,7 +138,8 @@ public class TopServiceImpl implements TopService{
 
     @Override
     public List<Top> findLastDayDeletedTop(int day) {
-        List<Top> deletedTop = topDao.findLastDayDeletedTop(getLastMinute(60*24*day),getLastMinute(60*24*(day-1)));
+        List<Top> deletedTop = topDao.findLastDayDeletedTop(getLastMinute(60*24*day),getLastMinute(60*24*(day-1))).stream().filter(distinctByKey(Top::getTitle)).collect(
+                Collectors.toList());
         Top top = new Top();
         top.setTitle("最近"+day+"*24小时被删热搜");
         top.setStatus(3);
@@ -171,8 +176,15 @@ public class TopServiceImpl implements TopService{
         List<Top> deletedTop = this.findLastDayDeletedTop(1);
         localCache.put(LocalCache.FINDDELETETOP+":1",deletedTop);
 
-        List<Top> historyBurst = topDao.findHistoryBurst(3,0, 100);
+        List<Top> historyBurst = topDao.findHistoryBurst(3,0, 100).stream().filter(distinctByKey(Top::getTitle)).collect(
+                Collectors.toList());
         localCache.put(LocalCache.FINDHISTORYBURST+":3:100",historyBurst);
 
     }
+
+    public static<T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+        Map<Object, Boolean> seen = new ConcurrentHashMap<>();
+        return object -> seen.putIfAbsent(keyExtractor.apply(object), Boolean.TRUE) == null;
+    }
+
 }
