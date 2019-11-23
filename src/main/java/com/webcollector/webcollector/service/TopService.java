@@ -3,6 +3,7 @@ package com.webcollector.webcollector.service;
 import com.webcollector.webcollector.bean.Top;
 
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 public interface TopService {
@@ -14,8 +15,6 @@ public interface TopService {
 
     public void bachInsert(List<Object> titleList,List<Object> heatList,List<Object> urlList);
 
-    List<Top> findDeleted(List<String> list);
-
     List<Top> findRealTop();
 
     List<Top> findDeletedTop(int top);
@@ -23,5 +22,9 @@ public interface TopService {
     List<Top> findHistoryBurst(int index,int top);
 
     List<Top> findLastDayDeletedTop(int day);
+
+    List<Top> findMinute(Date start);
+
+    void addDelete(String title);
 
 }

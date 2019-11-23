@@ -24,7 +24,7 @@ public interface TopDao {
             "</foreach>)")
     List<Top> getList(List<String> list);
 
-    @Insert("insert into top (sequence,title,create_time,status,heat,type) values (#{sequence},#{title},#{date},#{status},#{heat},#{type})")
+    @Insert("insert into top (sequence,title,status,heat,type) values (#{sequence},#{title},#{status},#{heat},#{type})")
     void insert(Top top,Date date);
 
     @Insert("<script>  insert into top(sequence,title,heat,type,status,create_time) values" +
@@ -49,4 +49,9 @@ public interface TopDao {
     @Select("select "+COLUMNS+" from top where sequence < #{index} and status =1 order by id desc limit #{base},#{top}")
     List<Top> findHistoryBurst(int index,int base,int top);
 
+    @Select("select "+COLUMNS+" from top where  create_time = #{start} ")
+    List<Top> findMinute(Date start);
+
+    @Select("select "+COLUMNS+" from top where title = #{title} order by id desc limit 1")
+    Top getTopByTitle(String title);
 }
