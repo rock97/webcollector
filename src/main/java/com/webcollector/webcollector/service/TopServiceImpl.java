@@ -1,7 +1,4 @@
 package com.webcollector.webcollector.service;
-
-import static com.sun.tools.internal.xjc.reader.Ring.add;
-
 import com.alibaba.fastjson.JSON;
 import com.webcollector.webcollector.bean.Top;
 import com.webcollector.webcollector.cache.LocalCache;

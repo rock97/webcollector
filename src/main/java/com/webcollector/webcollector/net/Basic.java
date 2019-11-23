@@ -38,8 +38,9 @@ public class Basic extends BaseSeimiCrawler {
 
             List<Top> topList = topService.findMinute(topService.getLastMinute(2));
             for (Top top : topList) {
-               String url =  "https://m.weibo.cn/api/container/getIndex?containerid=231522type%3D1%26q%3D%23"+top.getTitle()+"%23&page_type=searchall";
+               String url =  "https://m.weibo.cn/api/container/getIndex?containerid=231522type%3D1%26q%3D%23"+top.getTitle().replaceAll(" ","%20")+"%23&page_type=searchall";
                push(Request.build(url,Basic::findDelete));
+               Thread.sleep(500);
             }
 
         } catch (Exception e) {
@@ -70,6 +71,7 @@ public class Basic extends BaseSeimiCrawler {
                     String[] split = containerid.split("#");
                     String title = split[1];
                     topService.addDelete(title);
+                    logger.info("被删除的热搜 = {}",title);
                     return;
                 }
             }
