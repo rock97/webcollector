@@ -1,4 +1,4 @@
-create table weibo.top
+create table top_history
 (
   id          bigint auto_increment
     primary key,
@@ -7,14 +7,7 @@ create table weibo.top
   status      int(4)        null,
   heat        int           null,
   type        varchar(50)   null,
-  title       varchar(50)   null,
-  url         varchar(1000) null
-)
-  charset = utf8;
+  title       varchar(50)   null
+)ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='历史热点';
 
-create index idx_createTime
-  on weibo.top (create_time);
-
-create index idx_title
-  on weibo.top (title);
 

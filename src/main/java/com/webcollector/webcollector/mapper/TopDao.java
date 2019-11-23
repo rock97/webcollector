@@ -1,28 +1,29 @@
 package com.webcollector.webcollector.mapper;
 
 import com.webcollector.webcollector.bean.Top;
-
-import java.text.MessageFormat;
-import java.util.Date;
-
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Mapper
 public interface TopDao {
-    String COLUMNS = "id,title,heat,status";
+    String COLUMNS = "id,title,heat,status,create_time as createTime";
 
-    @Select("select "+COLUMNS+" from top order by id desc limit #{top}")
-    List<Top> getTop(@Param("top") int top);
+    @Select("select id,"+COLUMNS+" from top order by id desc limit #{start},#{end}")
+    List<Top> getTop(int start,int end);
 
     @Select("select "+COLUMNS+" from top where title in (" +
             "<foreach collection='list' item='item' index='index' separator=','>" +
             "#{item}"+
             "</foreach>)")
     List<Top> getList(List<String> list);
+
+    @Delete("delete from top where id in (" +
+            "<foreach collection='list' item='item' index='index' separator=','>" +
+            "#{item}"+
+            "</foreach>)")
+    void delete(List<Long> list);
 
     @Insert("insert into top (sequence,title,status,heat,type) values (#{sequence},#{title},#{status},#{heat},#{type})")
     void insert(Top top,Date date);

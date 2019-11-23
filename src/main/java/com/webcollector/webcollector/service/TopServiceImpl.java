@@ -1,24 +1,12 @@
 package com.webcollector.webcollector.service;
-import com.alibaba.fastjson.JSON;
 import com.webcollector.webcollector.bean.Top;
 import com.webcollector.webcollector.cache.LocalCache;
 import com.webcollector.webcollector.mapper.TopDao;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -29,9 +17,6 @@ public class TopServiceImpl implements TopService{
     @Autowired
     private TopDao topDao;
 
-    public List<Top> getTop(int top) {
-        return topDao.getTop(top);
-    }
 
     public List<Top> getList(List<String> list) {
         return topDao.getList(list);
