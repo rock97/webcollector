@@ -4,6 +4,8 @@ import com.webcollector.webcollector.bean.Top;
 import com.webcollector.webcollector.bean.TopHistory;
 import com.webcollector.webcollector.mapper.TopDao;
 import com.webcollector.webcollector.mapper.TopHistoryDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 @EnableScheduling
 public class SchedulingConfig {
 
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private int limit = 0;
 
     @Autowired
@@ -28,19 +32,25 @@ public class SchedulingConfig {
     @Scheduled(fixedRate = 100)
     public void snycTop(){
         List<Top> topList = topDao.getTop(limit, limit + 50);
-
+       // logger.info("topList = {}",topList);
         Date lastMinute = getLastMinute(30);
         if(topList ==null || topList.size() ==0 || topList.get(0).getCreateTime().after(lastMinute)) return;
 
         List<String> toptitleList = topList.stream().map(Top::getTitle).collect(Collectors.toList());
-        Map<String, Top> topMap = topList.stream().collect(Collectors.toMap(v -> v.getTitle(), v -> v));
+        Map<String, Top> topMap = new HashMap<>();
+        for (Top s : topList) {
+            topMap.put(s.getTitle(),s);
+        }
+        logger.info("toptitleList = {}",toptitleList);
         List<TopHistory> listHistory = topHistoryDao.getList(toptitleList);
-        List<String> topHistorytitleList = listHistory.stream().map(TopHistory::getTitle).collect(Collectors.toList());
-        Map<String, String> mapTopHistory = topHistorytitleList.stream().collect(Collectors.toMap(v -> v, v -> v));
-
+        Map<String, String> mapTopHistory = new HashMap<>();
+        for (TopHistory s : listHistory) {
+            mapTopHistory.put(s.getTitle(),s.getTitle());
+        }
         List<TopHistory> newList = new ArrayList<>();
         for (String s : toptitleList) {
             if(mapTopHistory.get(s)==null){
+                logger.info("mapTopHistory is null= {}",s);
                 Top top = topMap.get(s);
                 TopHistory topHistory = new TopHistory();
                 BeanUtils.copyProperties(top,topHistory);

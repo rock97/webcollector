@@ -10,19 +10,19 @@ import java.util.List;
 public interface TopDao {
     String COLUMNS = "id,title,heat,status,create_time as createTime";
 
-    @Select("select id,"+COLUMNS+" from top order by id desc limit #{start},#{end}")
+    @Select("select "+COLUMNS+" from top limit #{start},#{end}")
     List<Top> getTop(int start,int end);
 
-    @Select("select "+COLUMNS+" from top where title in (" +
+    @Select("<script>select "+COLUMNS+" from top where title in (" +
             "<foreach collection='list' item='item' index='index' separator=','>" +
             "#{item}"+
-            "</foreach>)")
+            "</foreach>)</script>")
     List<Top> getList(List<String> list);
 
-    @Delete("delete from top where id in (" +
+    @Delete("<script> delete from top where id in (" +
             "<foreach collection='list' item='item' index='index' separator=','>" +
             "#{item}"+
-            "</foreach>)")
+            "</foreach>)</script> ")
     void delete(List<Long> list);
 
     @Insert("insert into top (sequence,title,status,heat,type) values (#{sequence},#{title},#{status},#{heat},#{type})")

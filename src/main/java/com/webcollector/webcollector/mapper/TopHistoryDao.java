@@ -17,11 +17,11 @@ public interface TopHistoryDao {
     @Select("select "+COLUMNS+" from top_history order by id desc limit #{top}")
     List<TopHistory> getTop(@Param("top") int top);
 
-    @Select("select "+COLUMNS+" from top_history where title in (" +
-            "<foreach collection='list' item='item' index='index' separator=','>" +
-            "#{item}"+
-            "</foreach>)")
-    List<TopHistory> getList(List<String> list);
+    @Select("<script> select "+COLUMNS+" from top_history where title in (" +
+            "<foreach collection='list' item='i' index='index' separator=','>" +
+            "#{i}"+
+            "</foreach>)</script>")
+    List<TopHistory> getList(@Param("list")List<String> list);
 
 
     @Insert("<script>  insert into top_history(sequence,title,heat,type,status,create_time) values" +
