@@ -21,27 +21,24 @@ public class SchedulingConfig {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private int limit = 0;
-
     @Autowired
     private TopDao topDao;
 
     @Autowired
     private TopHistoryDao topHistoryDao;
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(cron = "0/60 * * * * ?")
     public void snycTop(){
-        List<Top> topList = topDao.getTop(limit, limit + 50);
-       // logger.info("topList = {}",topList);
-        Date lastMinute = getLastMinute(30);
-        if(topList ==null || topList.size() ==0 || topList.get(0).getCreateTime().after(lastMinute)) return;
+        List<Top> topList = topDao.getLastMinute(getLastMinute(30));
+
+        if(topList ==null || topList.size() ==0) return;
 
         List<String> toptitleList = topList.stream().map(Top::getTitle).collect(Collectors.toList());
         Map<String, Top> topMap = new HashMap<>();
         for (Top s : topList) {
             topMap.put(s.getTitle(),s);
         }
-        logger.info("toptitleList = {}",toptitleList);
+        logger.info("toptitleList.size = {}",toptitleList.size());
         List<TopHistory> listHistory = topHistoryDao.getList(toptitleList);
         Map<String, String> mapTopHistory = new HashMap<>();
         for (TopHistory s : listHistory) {
@@ -50,7 +47,6 @@ public class SchedulingConfig {
         List<TopHistory> newList = new ArrayList<>();
         for (String s : toptitleList) {
             if(mapTopHistory.get(s)==null){
-                logger.info("mapTopHistory is null= {}",s);
                 Top top = topMap.get(s);
                 TopHistory topHistory = new TopHistory();
                 BeanUtils.copyProperties(top,topHistory);
@@ -64,8 +60,6 @@ public class SchedulingConfig {
 
         List<Long> idList = topList.stream().map(Top::getId).collect(Collectors.toList());
         topDao.delete(idList);
-
-        limit+=50;
     }
     public Date getLastMinute(int i){
         Date date = new Date();
