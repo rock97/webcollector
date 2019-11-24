@@ -29,7 +29,7 @@ public class SchedulingConfig {
 
     @Scheduled(cron = "0/60 * * * * ?")
     public void snycTop(){
-        List<Top> topList = topDao.getLastMinute(getLastMinute(30));
+        List<Top> topList = topDao.getLastMinute(getLastMinute(2));
 
         if(topList ==null || topList.size() ==0) return;
 

@@ -1,6 +1,5 @@
 package com.webcollector.webcollector.mapper;
 
-import com.webcollector.webcollector.bean.Top;
 import com.webcollector.webcollector.bean.TopHistory;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -46,9 +45,4 @@ public interface TopHistoryDao {
     @Select("select "+COLUMNS+" from top_history where sequence < #{index} and status =1 order by id desc limit #{base},#{top}")
     List<TopHistory> findHistoryBurst(int index, int base, int top);
 
-    @Select("select "+COLUMNS+" from top_history where  create_time = #{start} ")
-    List<TopHistory> findMinute(Date start);
-
-    @Select("select "+COLUMNS+" from top_history where title = #{title} order by id desc limit 1")
-    Top getTopByTitle(String title);
 }

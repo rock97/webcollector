@@ -18,8 +18,6 @@ public interface TopService {
 
     List<Top> findHistoryBurst(int index,int top);
 
-    List<Top> findLastDayDeletedTop(int day);
-
     List<Top> findMinute(Date start);
 
     void addDelete(String title);

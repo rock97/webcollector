@@ -2,6 +2,7 @@ package com.webcollector.webcollector.service;
 import com.webcollector.webcollector.bean.Top;
 import com.webcollector.webcollector.cache.LocalCache;
 import com.webcollector.webcollector.mapper.TopDao;
+import com.webcollector.webcollector.mapper.TopHistoryDao;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class TopServiceImpl implements TopService{
     @Autowired
     private TopDao topDao;
 
+    @Autowired
+    private TopHistoryDao topHistoryDao;
 
     public List<Top> getList(List<String> list) {
         return topDao.getList(list);
@@ -63,8 +66,6 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findRealTop() {
         List<Top> lastMinute = this.findlastMinuteTop();
-        List<Top> lastMinuteDeleted = topDao.findLastMinuteDeleted(getLastMinute(60*3));
-        lastMinute.addAll(lastMinuteDeleted);
         return lastMinute;
     }
 
@@ -76,11 +77,6 @@ public class TopServiceImpl implements TopService{
     @Override
     public List<Top> findHistoryBurst(int index, int top) {
         return topDao.findHistoryBurst(index,Math.max(0,top-100),top);
-    }
-
-    @Override
-    public List<Top> findLastDayDeletedTop(int day) {
-       return null;
     }
 
     @Override
@@ -123,9 +119,6 @@ public class TopServiceImpl implements TopService{
         List<Top> topList = findRealTop();
         topList.sort(Comparator.comparing(Top::getHeat).reversed());
         localCache.put(LocalCache.GETTOP,topList);
-
-        List<Top> deletedTop = this.findLastDayDeletedTop(1);
-        localCache.put(LocalCache.FINDDELETETOP+":1",deletedTop);
 
         List<Top> historyBurst = topDao.findHistoryBurst(3,0, 500);
         localCache.put(LocalCache.FINDHISTORYBURST+":3:100",historyBurst);
