@@ -10,6 +10,8 @@ import com.webcollector.webcollector.bean.Card;
 import com.webcollector.webcollector.bean.Top;
 import java.util.List;
 
+import com.webcollector.webcollector.bean.User;
+import com.webcollector.webcollector.mapper.UserMapper;
 import com.webcollector.webcollector.service.TopServiceImpl;
 import java.util.Map;
 import org.seimicrawler.xpath.JXDocument;
@@ -22,6 +24,8 @@ public class Basic extends BaseSeimiCrawler {
     @Autowired
     private TopServiceImpl topService;
 
+    @Autowired
+    private UserMapper userMapper;
     @Override
     public String[] startUrls() {
         return new String[]{"http://s.weibo.com/top/summary?cate=realtimehot"};
@@ -48,7 +52,15 @@ public class Basic extends BaseSeimiCrawler {
     }
     @Scheduled(cron = "0/60 * * * * ?")
     public void callByCron(){
-        push(Request.build(startUrls()[0],"start").setSkipDuplicateFilter(true));
+        //push(Request.build(startUrls()[0],"start").setSkipDuplicateFilter(true));
+
+
+       User u = new User();
+       u.setAddress("wewe");
+       u.setDeviceName("wew");
+       //。。。。
+        userMapper.insert(u);
+
     }
 
     public void findDelete(Response response){
