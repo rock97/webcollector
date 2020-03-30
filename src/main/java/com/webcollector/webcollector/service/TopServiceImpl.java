@@ -56,8 +56,8 @@ public class TopServiceImpl implements TopService{
             top.setType("new");
             top.setStatus(1);
             top.setTitle(titleList.get(i));
-            //topList.add(top);
-            topDao.insert(top);
+            topList.add(top);
+            //topDao.insert(top,new Date());
         }
 
 
