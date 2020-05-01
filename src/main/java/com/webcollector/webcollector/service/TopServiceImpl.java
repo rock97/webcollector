@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -17,9 +18,6 @@ public class TopServiceImpl implements TopService{
 
     @Autowired
     private TopDao topDao;
-
-    @Autowired
-    private TopHistoryDao topHistoryDao;
 
     public List<Top> getList(List<String> list) {
         return topDao.getList(list);
@@ -37,17 +35,17 @@ public class TopServiceImpl implements TopService{
     }
 
     public void bachInsert(List<Object> urls,List<Object> heatList,List<Object> urlList) {
-
         if(urls == null){
             return;
         }
-
         List<Top> topList = new ArrayList<>();
         List<String> titleList = new ArrayList();
 
         for (Object url : urls) {
             titleList.add(url.toString());
         }
+
+        List<Top> deletedTop = this.findDeleted(titleList,Integer.valueOf(heatList.get(heatList.size()-5).toString()));
 
         for (int i = 0; i < heatList.size(); i++) {
             Top top = new Top();
@@ -59,7 +57,14 @@ public class TopServiceImpl implements TopService{
             topList.add(top);
         }
 
+        for (Top top : deletedTop) {
+            top.setStatus(2);
+            top.setType("deleted");
+            topList.add(top);
+        }
+
         topDao.bachInsert(topList,getLastMinute(0));
+
 
     }
 
@@ -87,7 +92,7 @@ public class TopServiceImpl implements TopService{
     @Override
     public void addDelete(String title) {
         Top topByTitle = topDao.getTopByTitle(title);
-        topByTitle.setStatus(2);
+        topByTitle.setStatus(3);
         topByTitle.setType("deleted");
         List<Top> list = new ArrayList<>();
         list.add(topByTitle);
@@ -110,6 +115,20 @@ public class TopServiceImpl implements TopService{
             lastMinute = topDao.getLastMinute(getLastMinute(1));
         }
         return lastMinute;
+    }
+    public List<Top> findDeleted(List<String> list,int heat) {
+        List<Top> oldList = this.findlastMinuteTop();
+        List<Top> deleteTop = new ArrayList();
+        Map<String, String> nowMap = list.stream().collect(Collectors.toMap(v -> v, v -> v));
+        for (Top oldTop : oldList) {
+            if(nowMap.get(oldTop.getTitle())==null){
+                if(oldTop.getHeat() > heat) {
+                    deleteTop.add(oldTop);
+                }
+            }
+        }
+
+        return deleteTop;
     }
 
     /**
