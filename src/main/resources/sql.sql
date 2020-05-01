@@ -16,3 +16,5 @@ ssh -i weibors.xyz.pem root@47.105.69.108 1997yjj.
 ssh -p22022 root@149.129.127.41 N86iuTz7JuafhUoQ
 scp -i weibors.xyz.pem ../Documents/webcollector-1.6.5.jar root@47.105.69.108:/home
 netstat -ltunp*/
+scp -i ~/.ssh/mint2.pem target/webcollector-2.0.1.jar root@47.105.69.108:/home
+
