@@ -38,19 +38,24 @@ public class Test {
             }
         }
         Iterator<Map.Entry<String, Integer>> iterator = map.entrySet().iterator();
+        Double count = 0.0;
         while (iterator.hasNext()){
             Map.Entry<String, Integer> entry = iterator.next();
-            //System.out.println(entry.getKey() + ": " + entry.getValue());
+            count +=entry.getValue();
         }
         List<Map.Entry<String, Integer>> list = new ArrayList<>();
+
         Map.Entry<String, Integer> entry;
         while ((entry = getMax(map)) != null){
             list.add(entry);
         }
-        System.out.println(Arrays.toString(list.toArray()));
-        list.forEach(v->{
-            System.out.println(v.getKey()+" = " + v.getValue());
-        });
+
+        for (Map.Entry<String, Integer> enty : list) {
+            System.out.println(enty.getKey()+" = " + enty.getValue() +" 占比（千分之）: "+((enty.getValue() / count)*1000)/10);
+
+        }
+
+
 
     }
 
