@@ -11,3 +11,8 @@ create table top_history
 )ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='历史热点';
 
 
+/*
+ssh -i weibors.xyz.pem root@47.105.69.108 1997yjj.
+ssh -p22022 root@149.129.127.41 N86iuTz7JuafhUoQ
+scp -i weibors.xyz.pem ../Documents/webcollector-1.6.5.jar root@47.105.69.108:/home
+netstat -ltunp*/
