@@ -29,21 +29,16 @@ public class SchedulingConfig {
 
     @Scheduled(cron = "0/60 * * * * ?")
     public void snycTop(){
-        List<Top> topList = topDao.getLastMinute(getLastMinute(2));
+        List<Top> topList = topDao.findLastTop(getLastMinute(2));
 
         if(topList ==null || topList.size() ==0) return;
 
-        List<String> toptitleList = topList.stream().map(Top::getTitle).collect(Collectors.toList());
-        Map<String, Top> topMap = new HashMap<>();
-        for (Top s : topList) {
-            topMap.put(s.getTitle(),s);
-        }
+        List<String> toptitleList = topList.stream().map(Top::getTitle).distinct().collect(Collectors.toList());
+        Map<String, Top> topMap = topList.stream().collect(Collectors.toMap(v -> v.getTitle(), v -> v));
+
         logger.info("toptitleList.size = {}",toptitleList.size());
         List<TopHistory> listHistory = topHistoryDao.getList(toptitleList);
-        Map<String, String> mapTopHistory = new HashMap<>();
-        for (TopHistory s : listHistory) {
-            mapTopHistory.put(s.getTitle(),s.getTitle());
-        }
+        Map<String, TopHistory> mapTopHistory = listHistory.stream().collect(Collectors.toMap(v->v.getTitle(),v->v));
         List<TopHistory> newList = new ArrayList<>();
         for (String s : toptitleList) {
             if(mapTopHistory.get(s)==null){
@@ -51,6 +46,11 @@ public class SchedulingConfig {
                 TopHistory topHistory = new TopHistory();
                 BeanUtils.copyProperties(top,topHistory);
                 newList.add(topHistory);
+            }else{
+                TopHistory history = mapTopHistory.get(s);
+                Top top = topMap.get(s);
+                history.setHeat(history.getHeat()+top.getHeat());
+                topHistoryDao.update(history);
             }
         }
 

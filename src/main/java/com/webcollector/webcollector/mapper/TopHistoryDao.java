@@ -1,10 +1,7 @@
 package com.webcollector.webcollector.mapper;
 
 import com.webcollector.webcollector.bean.TopHistory;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 import java.util.List;
@@ -29,6 +26,9 @@ public interface TopHistoryDao {
             "</foreach> </script>"
     )
     void bachInsert(@Param("list") List<TopHistory> list);
+
+    @Update("update top_history set heat = #{p.heat} where id = #{p.id}" )
+    void update(@Param("p") TopHistory p);
 
     @Select("select "+COLUMNS+" from top_history where status = 1 and create_time >= #{date} order by id desc")
     List<TopHistory> getLastMinute(Date date);
