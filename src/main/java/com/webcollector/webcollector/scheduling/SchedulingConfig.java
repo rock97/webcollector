@@ -1,5 +1,6 @@
 package com.webcollector.webcollector.scheduling;
 
+import com.alibaba.fastjson.JSON;
 import com.webcollector.webcollector.bean.Top;
 import com.webcollector.webcollector.bean.TopHistory;
 import com.webcollector.webcollector.mapper.TopDao;
@@ -33,12 +34,17 @@ public class SchedulingConfig {
 
         if(topList ==null || topList.size() ==0) return;
 
-        List<String> toptitleList = topList.stream().map(Top::getTitle).distinct().collect(Collectors.toList());
-        Map<String, Top> topMap = topList.stream().collect(Collectors.toMap(v -> v.getTitle(), v -> v));
-
+        List<String> toptitleList = topList.stream().map(Top::getTitle).collect(Collectors.toList());
+        Map<String, Top> topMap = new HashMap<>();
+        for (Top s : topList) {
+            topMap.put(s.getTitle(),s);
+        }
         logger.info("toptitleList.size = {}",toptitleList.size());
         List<TopHistory> listHistory = topHistoryDao.getList(toptitleList);
-        Map<String, TopHistory> mapTopHistory = listHistory.stream().collect(Collectors.toMap(v->v.getTitle(),v->v));
+        Map<String, TopHistory> mapTopHistory = new HashMap<>();
+        for (TopHistory s : listHistory) {
+            mapTopHistory.put(s.getTitle(),s);
+        }
         List<TopHistory> newList = new ArrayList<>();
         for (String s : toptitleList) {
             if(mapTopHistory.get(s)==null){
@@ -51,11 +57,13 @@ public class SchedulingConfig {
                 Top top = topMap.get(s);
                 history.setHeat(history.getHeat()+top.getHeat());
                 topHistoryDao.update(history);
+                logger.info("SchedulingConfig update ={}",JSON.toJSONString(history));
             }
         }
 
         if(newList.size()>0){
             topHistoryDao.bachInsert(newList);
+            logger.info("SchedulingConfig new list = {}", JSON.toJSONString(newList));
         }
 
         List<Long> idList = topList.stream().map(Top::getId).collect(Collectors.toList());
