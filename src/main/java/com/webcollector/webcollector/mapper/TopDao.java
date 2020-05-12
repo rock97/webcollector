@@ -44,7 +44,7 @@ public interface TopDao {
     @Select("select "+COLUMNS+" from top where status = 2 and create_time >= #{date}  order by id desc")
     List<Top> findLastMinuteDeleted(Date date);
 
-    @Select("select "+COLUMNS+" from top where status = 1 and  create_time <=#{end}  order by id desc")
+    @Select("select "+COLUMNS+" from top where create_time <=#{end}  order by id desc")
     List<Top> findLastTop(Date end);
 
     @Select("select "+COLUMNS+" from top where sequence < #{index} and status =1 order by id desc limit #{base},#{top}")
