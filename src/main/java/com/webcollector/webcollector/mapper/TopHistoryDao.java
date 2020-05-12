@@ -13,7 +13,7 @@ public interface TopHistoryDao {
     @Select("select "+COLUMNS+" from top_history order by id desc limit #{top}")
     List<TopHistory> getTop(@Param("top") int top);
 
-    @Select("<script> select "+COLUMNS+" from top_history where status=1 and title in (" +
+    @Select("<script> select "+COLUMNS+" from top_history where title in (" +
             "<foreach collection='list' item='i' index='index' separator=','>" +
             "#{i}"+
             "</foreach>)</script>")
