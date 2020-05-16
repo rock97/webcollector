@@ -40,7 +40,7 @@ public class SchedulingConfig {
             topMap.put(s.getTitle(),s);
         }
         logger.info("toptitleList.size = {}",toptitleList.size());
-        List<TopHistory> listHistory = topHistoryDao.getList(toptitleList);
+        List<TopHistory> listHistory = topHistoryDao.getList(toptitleList,getLastMinute(60));
         Map<String, TopHistory> mapTopHistory = new HashMap<>();
         for (TopHistory s : listHistory) {
             mapTopHistory.put(s.getTitle(),s);

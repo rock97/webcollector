@@ -3,6 +3,7 @@ package com.webcollector.webcollector.mapper;
 import com.webcollector.webcollector.bean.TopHistory;
 import org.apache.ibatis.annotations.*;
 
+import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
 
@@ -13,11 +14,11 @@ public interface TopHistoryDao {
     @Select("select "+COLUMNS+" from top_history order by id desc limit #{top}")
     List<TopHistory> getTop(@Param("top") int top);
 
-    @Select("<script> select "+COLUMNS+" from top_history where title in (" +
+    @Select("<script> select "+COLUMNS+" from top_history where create_time >#{begin} and title in (" +
             "<foreach collection='list' item='i' index='index' separator=','>" +
             "#{i}"+
             "</foreach>)</script>")
-    List<TopHistory> getList(@Param("list")List<String> list);
+    List<TopHistory> getList(@Param("list")List<String> list, @Param("begin")Date begin);
 
 
     @Insert("<script>  insert into top_history(sequence,title,heat,type,status,create_time) values" +
